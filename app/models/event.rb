@@ -1,4 +1,6 @@
 class Event < ApplicationRecord
+  belongs_to :owner, class_name: "User"
+  has_many :tickets
 
   validates :name, length: { maximum: 50 }, presence: true
   validates :place, length: { maximum: 100 }, presence: true
@@ -6,6 +8,12 @@ class Event < ApplicationRecord
   validates :start_at, presence: true
   validates :end_at, presence: true
   validate :start_at_should_be_before_end_at
+
+  # 引数のuserが該当イベントを作成したかを判別する
+  def created_by?(user)
+    return false unless user
+    owner_id == user.id
+  end
 
   private
 
